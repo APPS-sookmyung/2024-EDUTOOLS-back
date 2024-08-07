@@ -1,0 +1,677 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: 거래 웹앱 API
+  description: 거래 웹앱을 위한 API 명세서
+servers:
+  - url: http://localhost:3000/api
+    description: Local server
+
+paths:
+  /auth/google:
+    post:
+      summary: 구글 로그인
+      description: 구글 OAuth2.0를 사용하여 로그인합니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: google_oauth_token
+      responses:
+        "200":
+          description: 성공적으로 로그인
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: jwt_token
+                  refreshToken:
+                    type: string
+                    example: refresh_token
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: user_id
+                      name:
+                        type: string
+                        example: user_name
+                      avatar:
+                        type: string
+                        example: avatar_url
+
+  /auth/kakao:
+    post:
+      summary: 카카오 로그인
+      description: 카카오 OAuth2.0를 사용하여 로그인합니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: kakao_oauth_token
+      responses:
+        "200":
+          description: 성공적으로 로그인
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: jwt_token
+                  refreshToken:
+                    type: string
+                    example: refresh_token
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: user_id
+                      name:
+                        type: string
+                        example: user_name
+                      avatar:
+                        type: string
+                        example: avatar_url
+
+  /auth/naver:
+    post:
+      summary: 네이버 로그인
+      description: 네이버 OAuth2.0를 사용하여 로그인합니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: naver_oauth_token
+      responses:
+        "200":
+          description: 성공적으로 로그인
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: jwt_token
+                  refreshToken:
+                    type: string
+                    example: refresh_token
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: user_id
+                      name:
+                        type: string
+                        example: user_name
+                      avatar:
+                        type: string
+                        example: avatar_url
+
+  /profile:
+    get:
+      summary: 사용자 프로필 조회
+      description: 현재 로그인한 사용자의 프로필 정보를 조회합니다.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: 성공적으로 프로필 정보를 조회했습니다.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: user_id
+                  name:
+                    type: string
+                    example: user_name
+                  avatar:
+                    type: string
+                    example: avatar_url
+                  description:
+                    type: string
+                    example: markdown_description
+                  portfolioLink:
+                    type: string
+                    example: portfolio_url
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+    put:
+      summary: 사용자 프로필 업데이트
+      description: 현재 로그인한 사용자의 프로필 정보를 업데이트합니다.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  example: avatar_url
+                description:
+                  type: string
+                  example: markdown_description
+                portfolioLink:
+                  type: string
+                  example: portfolio_url
+      responses:
+        "200":
+          description: 성공적으로 프로필 정보를 업데이트했습니다.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Profile updated successfully.
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+  /trades:
+    get:
+      summary: 거래 목록 조회
+      description: 현재 등록된 모든 거래 목록을 조회합니다.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: 성공적으로 거래 목록을 조회했습니다.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: trade_id
+                    title:
+                      type: string
+                      example: trade_title
+                    thumbnail:
+                      type: string
+                      example: thumbnail_url
+                    amount:
+                      type: string
+                      example: proposed_amount
+                    deadline:
+                      type: string
+                      example: deadline_date
+                    description:
+                      type: string
+                      example: trade_description
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+    post:
+      summary: 새로운 거래 등록
+      description: 새로운 거래를 등록합니다.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: trade_title
+                amount:
+                  type: string
+                  example: proposed_amount
+                thumbnail:
+                  type: string
+                  example: thumbnail_url
+                deadline:
+                  type: string
+                  example: deadline_date
+                description:
+                  type: string
+                  example: trade_description
+      responses:
+        "201":
+          description: 성공적으로 거래를 등록했습니다.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: new_trade_id
+                  message:
+                    type: string
+                    example: Trade created successfully.
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+  /trades/{id}:
+    get:
+      summary: 특정 거래 조회
+      description: 특정 거래의 상세 정보를 조회합니다.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: trade_id
+      responses:
+        "200":
+          description: 성공적으로 거래를 조회했습니다.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: trade_id
+                  title:
+                    type: string
+                    example: trade_title
+                  thumbnail:
+                    type: string
+                    example: thumbnail_url
+                  amount:
+                    type: string
+                    example: proposed_amount
+                  deadline:
+                    type: string
+                    example: deadline_date
+                  description:
+                    type: string
+                    example: trade_description
+                  applicants:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: applicant_id
+                        name:
+                          type: string
+                          example: applicant_name
+                        avatar:
+                          type: string
+                          example: avatar_url
+                        description:
+                          type: string
+                          example: applicant_description
+                        portfolioLink:
+                          type: string
+                          example: portfolio_url
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+  /trades/{id}/apply:
+    post:
+      summary: 거래 신청
+      description: 특정 거래에 신청합니다.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: trade_id
+      responses:
+        "200":
+          description: 성공적으로 거래에 신청했습니다.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Application submitted successfully.
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+    delete:
+      summary: 거래 신청 취소
+      description: 특정 거래 신청을 취소합니다.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: trade_id
+      responses:
+        "200":
+          description: 성공적으로 거래 신청을 취소했습니다.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Application canceled successfully.
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+  /trades/{id}/complete:
+    post:
+      summary: 거래 완료
+      description: 특정 거래를 완료합니다.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: trade_id
+      responses:
+        "200":
+          description: 성공적으로 거래를 완료했습니다.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Trade completed successfully.
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+  /chatrooms:
+    get:
+      summary: 톡방 목록 조회
+      description: 현재 사용자의 모든 톡방 목록을 조회합니다.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: 성공적으로 톡방 목록을 조회했습니다.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: chatroom_id
+                    tradeTitle:
+                      type: string
+                      example: trade_title
+                    participants:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: participant_id
+                          name:
+                            type: string
+                            example: participant_name
+                          avatar:
+                            type: string
+                            example: avatar_url
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+  /chatrooms/{id}/messages:
+    get:
+      summary: 톡방 메시지 조회
+      description: 특정 톡방의 모든 메시지를 조회합니다.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: chatroom_id
+      responses:
+        "200":
+          description: 성공적으로 톡방 메시지를 조회했습니다.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: message_id
+                    sender:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: sender_id
+                        name:
+                          type: string
+                          example: sender_name
+                        avatar:
+                          type: string
+                          example: avatar_url
+                    content:
+                      type: string
+                      example: message_content
+                    timestamp:
+                      type: string
+                      example: message_timestamp
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+    post:
+      summary: 톡방 메시지 전송
+      description: 특정 톡방에 메시지를 전송합니다.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: chatroom_id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: message_content
+      responses:
+        "201":
+          description: 성공적으로 메시지를 전송했습니다.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: new_message_id
+                  message:
+                    type: string
+                    example: Message sent successfully.
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+  /chatrooms/{id}:
+    delete:
+      summary: 톡방 삭제
+      description: 특정 톡방을 삭제합니다.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            example: chatroom_id
+      responses:
+        "200":
+          description: 성공적으로 톡방을 삭제했습니다.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Chatroom deleted successfully.
+        "401":
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthorized
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
